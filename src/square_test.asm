@@ -110,7 +110,7 @@ Entry::
   db $bb, $bb, $67, $63, $6e, $0e, $ec, $cc, $dd, $dc, $99, $9f, $bb, $b9, $33, $3e
 
 HeaderTitle::
-  db "NOISE TEST", $00, $00, $00, $00, $00, $00
+  db "SQUARE TEST", $00, $00, $00, $00, $00
 
 HeaderNewLicenseeCode::
   db $00, $00
@@ -189,7 +189,7 @@ Start::
   ld hl, FontData
   ld de, FontDataVram
   call CopyTilesToVram
-  ld hl, NoiseTestLogoData
+  ld hl, SquareTestLogoData
   ld de, LogoDataVram
   ld a, SIZE_LOGO_DATA
   call CopyTilesToVram
@@ -503,7 +503,6 @@ PressedRightButton::
   ld [hl], a
 .UpdateScreenAndRegs:
   call RedrawScreen
-  call ValueToReg
   ret
 
 ; Decrease value of currently selected option.
@@ -550,10 +549,9 @@ PressedLeftButton::
   ld [hl], a
 .UpdateScreenAndRegs:
   call RedrawScreen
-  call ValueToReg
   ret
 
-; If "PLAY" is currently selected, the sound registers are updated and the noise channel is triggered.
+; If "PLAY" is currently selected, the sound registers are updated and the square channel is triggered.
 PressedAButton::
   call RedrawScreen
   ld a, [CursorIndex]
@@ -652,47 +650,6 @@ PressedSelectButton:
   ld [RegLengthEnable], a
   call RedrawScreen
   ret
-
-; Updates currently changed sound register except for length enable and trigger.
-ValueToReg::
-  ; TODO
-  ret
-;   ld a, [CursorIndex]
-;   cp 0
-;   jr nz, :+
-;   ld a, [RegLength]
-;   ldh [rNR41], a
-;   ret
-; : cp 4
-;   jr nc, :+
-;   ld a, [RegInitVolume]
-;   swap a
-;   ld b, a
-;   ld a, [RegEnvelopeMode]
-;   sla a
-;   sla a
-;   sla a
-;   or b
-;   ld b, a
-;   ld a, [RegEnvelopePeriod]
-;   or b
-;   ldh [rNR42], a
-;   ret
-; : cp 7
-;   jr nc, :+
-;   ld a, [RegClockShift]
-;   swap a
-;   ld b, a
-;   ld a, [RegLfsrWidth]
-;   sla a
-;   sla a
-;   sla a
-;   or b
-;   ld b, a
-;   ld a, [RegDivisor]
-;   or b
-;   ldh [rNR43], a
-; : ret
 
 ; Like TileMapLow but as a function. X coord in "c", Y coord in "d". Result in "bc"
 TileMapLowFunc::
@@ -949,11 +906,8 @@ InitTileMap::
 FontData::
   INCBIN "font.2bpp"
 
-NoiseTestLogoData::
+SquareTestLogoData::
   INCBIN "square_test_logo.2bpp"
-
-NoiseString::
-  db "NOISE",0
 
 SquareString::
   db "SQUARE",0
@@ -1034,7 +988,7 @@ Preset1::
   db $06 ; frequency1
   db 1   ; length enable
 
-; Another simple sound at 440Hz fading in.
+; Another simple sound at ~440Hz fading in.
 Preset2::
   db 0   ; sweep period
   db 0   ; negate
@@ -1048,7 +1002,7 @@ Preset2::
   db $06 ; frequency1
   db 1   ; length enable
 
-; Game Boy Boot C6
+; Game Boy Boot C6.
 Preset3::
   db 0   ; sweep period
   db 0   ; negate
@@ -1062,7 +1016,7 @@ Preset3::
   db $07 ; frequency1
   db 0   ; length enable
 
-; Game Boy Boot C7
+; Game Boy Boot C7.
 Preset4::
   db 0   ; sweep period
   db 0   ; negate
@@ -1105,11 +1059,6 @@ Preset6::
   db 0   ; length enable
 
 ; Super Mario Land Goomba hop.
-; 0101 0111
-; 1000 0000
-; 0110 0010
-; 0000 0110
-; 1000 0111
 Preset7::
   db 5   ; sweep period
   db 0   ; negate
@@ -1124,11 +1073,6 @@ Preset7::
   db 0   ; length enable
 
 ; Super Mario Land shroom taken.
-; 0010 0111
-; 1000 0000
-; 0110 0010
-; 0111 0010
-; 1000 0110
 Preset8::
   db 2   ; sweep period
   db 0   ; negate
@@ -1143,11 +1087,6 @@ Preset8::
   db 0   ; length enable
 
 ; Pokémon Red/Blue intro.
-; 0010 0110
-; 1100 1001
-; 1011 0001
-; 1010 1101
-; 1000 0101
 Preset9::
   db 2   ; sweep period
   db 0   ; negate

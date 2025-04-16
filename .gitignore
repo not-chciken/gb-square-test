@@ -3,4 +3,4 @@
 *.o
 *.sym
 
-src/noise_test.gb
+src/square_test.gb
